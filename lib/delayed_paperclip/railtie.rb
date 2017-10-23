@@ -4,11 +4,7 @@ require "delayed_paperclip"
 module DelayedPaperclip
   # On initialzation, include DelayedPaperclip
   class Railtie < Rails::Railtie
-    initializer "delayed_paperclip.insert_into_active_record" do |app|
-      ActiveSupport.on_load :active_record do
-        DelayedPaperclip::Railtie.insert
-      end
-
+    initializer "delayed_paperclip.insert_into_mongoid" do |app|
       ActiveSupport.on_load :mongoid do
         DelayedPaperclip::Railtie.insert
       end
@@ -23,7 +19,8 @@ module DelayedPaperclip
     # Glue includes DelayedPaperclip Class Methods and Instance Methods into ActiveRecord
     # Attachment and URL Generator extends Paperclip
     def self.insert
-      ActiveRecord::Base.send(:include, DelayedPaperclip::Glue)
+      # in your model, add this under class declaration:
+      # include DelayedPaperclip::Glue
       Paperclip::Attachment.prepend(DelayedPaperclip::Attachment)
       Paperclip::Attachment.default_options[:url_generator] = DelayedPaperclip::UrlGenerator
     end
