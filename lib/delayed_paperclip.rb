@@ -18,12 +18,11 @@ module DelayedPaperclip
       options[:background_job_class]
     end
 
-    def enqueue(instance_klass, instance_id, attachment_name)
-      processor.enqueue_delayed_paperclip(instance_klass, instance_id, attachment_name)
+    def enqueue(instance, attachment_name)
+      processor.enqueue_delayed_paperclip(instance, attachment_name)
     end
 
-    def process_job(instance_klass, instance_id, attachment_name)
-      instance = instance_klass.constantize.unscoped.where(id: instance_id).first
+    def process_job(instance, attachment_name)
       return if instance.blank?
 
       instance.
@@ -101,7 +100,7 @@ module DelayedPaperclip
     end
 
     def enqueue_post_processing_for name
-      DelayedPaperclip.enqueue(self.class.name, read_attribute(:id), name.to_sym)
+      DelayedPaperclip.enqueue(self, name.to_sym)
     end
 
     def prepare_enqueueing_for name
