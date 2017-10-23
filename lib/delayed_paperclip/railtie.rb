@@ -9,6 +9,10 @@ module DelayedPaperclip
         DelayedPaperclip::Railtie.insert
       end
 
+      ActiveSupport.on_load :mongoid do
+        DelayedPaperclip::Railtie.insert
+      end
+
       if app.config.respond_to?(:delayed_paperclip_defaults)
         DelayedPaperclip.options.merge!(app.config.delayed_paperclip_defaults)
       end
